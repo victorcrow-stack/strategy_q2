@@ -1,0 +1,452 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#08080d;color:#e2e2e8;line-height:1.6;overflow-x:hidden}
+:root{--accent:#6366f1;--accentSoft:rgba(99,102,241,0.12);--green:#22c55e;--greenSoft:rgba(34,197,94,0.1);--amber:#f59e0b;--amberSoft:rgba(245,158,11,0.1);--rose:#f43f5e;--roseSoft:rgba(244,63,94,0.1);--cyan:#06b6d4;--cyanSoft:rgba(6,182,212,0.1);--card:#111118;--border:#1e1e2d;--muted:#8888a0;--dim:#555568}
+.header{padding:28px 24px 0;border-bottom:1px solid var(--border)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.tag{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h1{font-size:23px;font-weight:700;line-height:1.25}
+.conf{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);background:var(--amberSoft);padding:3px 8px;border-radius:4px;display:inline-block;margin-top:4px}
+.date{font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right}
+.tabs{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:11.5px;font-weight:500;padding:10px 13px;cursor:pointer;white-space:nowrap;transition:all 0.15s;font-family:inherit}
+.tabs button:hover{color:#ccc}
+.tabs button.active{color:#e2e2e8;border-bottom-color:var(--accent)}
+.content{padding:24px 24px 60px;max-width:780px;margin:0 auto}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-title{margin-bottom:18px}
+.section-title h2{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.section-title p{font-size:12.5px;color:var(--muted);margin-top:3px;padding-left:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:18px 20px;margin-bottom:14px}
+.card-accent{background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(6,182,212,0.05));border-color:rgba(99,102,241,0.2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.badge{font-size:9.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block}
+.kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{text-align:center;flex:1;min-width:90px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 8px}
+.kpi .val{font-size:26px;font-weight:700;line-height:1}
+.kpi .lbl{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em}
+.phase{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden;cursor:pointer}
+.phase-header{padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
+.phase-arrow{font-size:11px;color:var(--dim);transition:transform 0.2s}
+.phase-arrow.open{transform:rotate(180deg)}
+.phase-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border)}
+.phase-body.open{display:block;padding-top:12px}
+.phase-item{display:flex;gap:8px;margin-bottom:7px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.pillar{border-left:3px solid;padding-left:14px}
+.pillar .num{font-size:17px;font-weight:700;line-height:1}
+.pillar .title{font-size:12.5px;font-weight:600;color:#e2e2e8;margin-top:2px}
+.pillar .desc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.55}
+.map-row{display:grid;grid-template-columns:1.2fr 0.3fr 1.2fr 1.6fr;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;align-items:center}
+.map-row:last-child{border-bottom:none}
+.map-head{font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:2px}
+.risk-row{display:grid;grid-template-columns:1.5fr 0.5fr 0.5fr 2fr;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;align-items:start}
+.risk-row:last-child{border-bottom:none}
+.decision{border-left:3px solid;padding:16px 18px;background:var(--card);border-radius:0 10px 10px 0;margin-bottom:12px;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.milestone{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid rgba(99,102,241,0.08);font-size:12px;align-items:center}
+.milestone:last-child{border-bottom:none}
+.milestone .md{color:var(--accent);font-weight:600;min-width:48px;font-size:11px}
+.cycle-flow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:center;padding:10px 0}
+.cycle-step{background:var(--accentSoft);color:var(--accent);padding:4px 10px;border-radius:6px;font-weight:500;font-size:10.5px}
+.cycle-arr{color:var(--dim);font-size:11px}
+.hl{color:#e2e2e8;font-weight:600}
+.txt-rose{color:var(--rose)}.txt-green{color:var(--green)}.txt-amber{color:var(--amber)}.txt-cyan{color:var(--cyan)}.txt-accent{color:var(--accent)}.txt-muted{color:var(--muted)}.txt-dim{color:var(--dim)}
+.table-grid{display:grid;font-size:11.5px}
+.table-grid .cell{padding:9px 8px;border-bottom:1px solid var(--border)}
+.table-grid .head{font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase}
+.source{font-size:11px;color:var(--dim);margin-top:8px;font-style:italic}
+/* Diagram */
+.diagram-wrap{position:relative;background:#f7f7f5;border-radius:10px;padding:16px;overflow-x:auto;margin-bottom:14px}
+.diagram-wrap .detail{display:none;position:absolute;background:#fff;border:0.5px solid #dddbd3;border-radius:10px;padding:10px 12px;min-width:180px;max-width:220px;box-shadow:0 4px 16px rgba(0,0,0,0.08);z-index:10}
+.diagram-wrap .detail.open{display:block}
+.diagram-wrap .detail-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.diagram-wrap .detail ul{list-style:none;padding:0}
+.diagram-wrap .detail ul li{font-size:11px;color:#444;padding:3px 0;border-bottom:0.5px solid #f0eeea}
+.diagram-wrap .detail ul li:last-child{border-bottom:none}
+.diagram-wrap .detail-close{float:right;font-size:11px;color:#bbb;cursor:pointer;margin-left:6px}
+.diagram-wrap .legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.diagram-wrap .leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#888}
+/* Capabilities */
+.cap-columns{display:grid;grid-template-columns:1fr 40px 1fr;gap:0;margin-bottom:14px;align-items:start}
+@media(max-width:600px){.cap-columns{grid-template-columns:1fr;gap:14px}}
+.cap-col-header{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;padding:8px 12px;border-radius:8px;text-align:center}
+.cap-group{margin-bottom:12px}
+.cap-group-title{font-size:10px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;margin-bottom:4px}
+.cap-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;margin:2px 0;border-radius:6px;font-size:11.5px;cursor:pointer;transition:all 0.15s;border:1px solid transparent}
+.cap-item:hover{border-color:var(--accent);background:rgba(99,102,241,0.05)}
+.cap-item .arrow-btn{font-size:14px;opacity:0.4;transition:opacity 0.15s}
+.cap-item:hover .arrow-btn{opacity:1}
+.cap-center{display:flex;align-items:center;justify-content:center;padding-top:40px}
+</style>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="tag">Objetivo Q2: Agentic Structure</div>
+      <h1>De Modelo Funcional a<br>Organización Agéntica AI-First</h1>
+    </div>
+    <div>
+      <div class="date">Abril 2026</div>
+      <div class="conf">Confidencial</div>
+    </div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="active" data-tab="vision">Visión Estratégica</button>
+    <button data-tab="mapping">Mapping AS IS → TO BE</button>
+    <button data-tab="roadmap">Roadmap</button>
+    <button data-tab="financial">Impacto</button>
+    <button data-tab="risks">Riesgos</button>
+    <button data-tab="decisions">Milestones</button>
+    <button data-tab="capabilities">Capacidades</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══ VISION ═══ -->
+<div class="tab-panel active" id="panel-vision">
+  <div class="section-title"><h2><span>◆</span> El Cambio de Paradigma</h2><p>No es una reestructuración — es un nuevo sistema operativo para la empresa</p></div>
+  <div class="card card-accent" style="margin-bottom:20px">
+    <p style="font-size:13.5px;line-height:1.7">Orbidi transiciona de un <strong class="txt-rose">modelo funcional por silos</strong> donde cada equipo decide qué hacer, a un <strong class="txt-green">modelo agéntico AI-first</strong> donde un sistema central asigna, prioriza y mide todo el trabajo — y progresivamente transfiere capacidades humanas a AI Agent Tools.</p>
+    <p class="source">Alineado con: McKinsey "The Agentic Organization" (2025) · BCG "Enterprise as Code" (2025) · WEF "AI-First Operating Models" (2026)</p>
+  </div>
+  <div class="grid2" style="margin-bottom:22px">
+    <div class="card"><div style="font-size:10.5px;font-weight:600;color:var(--rose);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">❌ Hoy: Modelo Funcional</div><div style="font-size:12px;color:var(--muted);line-height:1.65">8 equipos en silos deciden sus propias prioridades. Trabajo asignado por managers y canales informales. Sin datos de volumen/tiempo. La IA es una herramienta puntual.</div></div>
+    <div class="card"><div style="font-size:10.5px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">✓ Objetivo: Modelo Agéntico</div><div style="font-size:12px;color:var(--muted);line-height:1.65">Un AI Orchestra asigna todo como tickets priorizados. Los equipos ejecutan en orden. El sistema mide cada tarea. Esos datos determinan qué capacidad humana se convierte en la próxima AI Agent Tool.</div></div>
+  </div>
+  <div class="section-title"><h2><span>◇</span> Los 5 Pilares del Nuevo Modelo</h2></div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card" style="padding:16px 18px"><div class="pillar" style="border-color:var(--accent)"><div class="num txt-accent">01</div><div class="title">Sistema basado en Capabilities | Human to IA</div><div class="desc">Cada human capability es una AI Tool para el Roadmap.</div></div></div>
+    <div class="card" style="padding:16px 18px"><div class="pillar" style="border-color:var(--cyan)"><div class="num txt-cyan">02</div><div class="title">Orquestación del Workforce | First AI, then Human</div><div class="desc">El Orchestra prioriza por policies y balance de carga: si hay AI Tool, la ejecuta; si no, genera ticket al equipo humano (Front o Back).</div></div></div>
+    <div class="card" style="padding:16px 18px"><div class="pillar" style="border-color:var(--green)"><div class="num txt-green">03</div><div class="title">Roadmap AI Agent Tools | More AI Tools, Leaner Teams</div><div class="desc">Los datos del Orchestra determinan qué capacidad transformar en AI por demanda alta y el equipo Producto determina viabilidad de transformación en AI Agent Tool.</div></div></div>
+    <div class="card" style="padding:16px 18px"><div class="pillar" style="border-color:var(--amber)"><div class="num txt-amber">04</div><div class="title">Simplificar Estructura → 2 Teams | Front y Back</div><div class="desc">De múltiples equipos a 2 equipos enfocados en atender tickets por tipologías, donde el humano es polivalente y eficaz.</div></div></div>
+  </div>
+  <div class="card" style="padding:16px 18px;margin-bottom:16px"><div class="pillar" style="border-color:var(--rose)"><div class="num txt-rose">05</div><div class="title">Proteger KD Revenue | Mientras se construye ORBIDI 2.0</div><div class="desc">Objetivo Memorias intocable, la transformación no debe sacrificar el negocio actual.</div></div></div>
+  <div class="card card-accent">
+    <div style="font-size:10.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Ciclo Lean Operations</div>
+    <div style="position:relative;padding:6px 0 2px">
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+        <span class="cycle-step">Inputs Internos y Externos</span><span class="cycle-arr">→</span>
+        <span class="cycle-step">Orchestra genera Tickets</span><span class="cycle-arr">→</span>
+        <span class="cycle-step">AI Tool ejecuta</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap">
+        <span class="cycle-step">Si no: Human (Front/Back)</span><span class="cycle-arr">→</span>
+        <span class="cycle-step">Nueva AI Tool</span><span class="cycle-arr">→</span>
+        <span class="cycle-step">Headcount adjustment</span><span class="cycle-arr" style="font-size:16px">↻</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAPPING ═══ -->
+<div class="tab-panel" id="panel-mapping">
+  <div class="section-title"><h2><span>◆</span> Mapping Organizacional</h2><p>De múltiples equipos por silos funcionales a 2 Teams por Workforce Management</p></div>
+  <div class="card">
+    <div class="map-row map-head"><span>AS IS</span><span></span><span>TO BE</span><span>Relación con Orchestra</span></div>
+    <div class="map-row"><span class="txt-rose" style="font-weight:500">Support</span><span class="txt-dim" style="text-align:center">→</span><span class="txt-green" style="font-weight:500">Front-CS</span><span class="txt-muted" style="font-size:11px">Recibe evento de consulta o soporte, como conversaciones en Intercom o tickets como: pago IGIC/extra, etc</span></div>
+    <div class="map-row"><span class="txt-rose" style="font-weight:500">Satisfaction</span><span class="txt-dim" style="text-align:center">→</span><span class="txt-green" style="font-weight:500">Front-CS (CS 360)</span><span class="txt-muted" style="font-size:11px">Serán los primeros CS 360. Reciben Tickets por prioridad</span></div>
+    <div class="map-row"><span class="txt-rose" style="font-weight:500">CS</span><span class="txt-dim" style="text-align:center">→</span><span class="txt-green" style="font-weight:500">Front-CS (Team Lead → CS 360 · CS se mantiene)</span><span class="txt-muted" style="font-size:11px">Reciben Tickets por prioridad</span></div>
+    <div class="map-row"><span class="txt-rose" style="font-weight:500">Front Tramitación</span><span class="txt-dim" style="text-align:center">→</span><span class="txt-green" style="font-weight:500">Front-CS (CS)</span><span class="txt-muted" style="font-size:11px">Reciben Tickets por prioridad</span></div>
+    <div class="map-row"><span class="txt-rose" style="font-weight:500">Helpdesk</span><span class="txt-dim" style="text-align:center">→</span><span class="txt-green" style="font-weight:500">Back Producción</span><span class="txt-muted" style="font-size:11px">Reciben Tickets por prioridad, principalmente incidencias y cambios proyectos de urgencia</span></div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--cyan);margin-top:14px">
+    <div style="font-size:10.5px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Nota</div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.65;margin:0">Todos los equipos que hablan con cliente serán <strong class="hl">Team Front CS</strong> y serán polivalentes: pueden presentar proyectos de MKT, pedir firma memoria MKT o PC, etc. Esto aumentará la capacidad instalada de los equipos de front y se mueven todos a las necesidades de ORBIDI.</p>
+  </div>
+
+  <div class="section-title" style="margin-top:24px"><h2><span>◇</span> Modelo TO BE — Haz clic en los nodos para ver capacidades</h2></div>
+  <div class="diagram-wrap" id="diagram-wrap">
+    <svg id="mainchart" width="100%" viewBox="0 0 1200 940" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <!-- ROW 1 -->
+      <rect x="20" y="30" width="130" height="38" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="85" y="54" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Req. Cliente</text>
+      <rect x="370" y="30" width="130" height="38" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="435" y="54" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Req. Legales</text>
+      <rect x="560" y="30" width="150" height="38" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="635" y="54" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Req. Operaciones</text>
+      <rect x="780" y="30" width="130" height="38" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="845" y="54" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Req. Red.es</text>
+      <!-- ROW 2 -->
+      <rect x="20" y="120" width="150" height="46" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="95" y="143" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Hub Comunicación</text><text x="95" y="158" text-anchor="middle" font-size="11" fill="#999">(Intercom)</text>
+      <rect x="680" y="120" width="200" height="46" rx="7" fill="#fff" stroke="#ccc" stroke-width="0.5"/><text x="780" y="143" text-anchor="middle" font-size="12" font-weight="500" fill="#333">Hub Operaciones</text><text x="780" y="158" text-anchor="middle" font-size="11" fill="#999">(HubSpot · ClickUp)</text>
+      <!-- R1→R2 -->
+      <line x1="85" y1="68" x2="85" y2="120" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <line x1="85" y1="68" x2="85" y2="88" stroke="#bbb" stroke-width="1.5"/><line x1="85" y1="88" x2="780" y2="88" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5 3"/><line x1="780" y1="88" x2="780" y2="120" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><text x="310" y="82" text-anchor="middle" font-size="10" fill="#bbb">reseñas · NPS</text>
+      <line x1="435" y1="68" x2="435" y2="102" stroke="#bbb" stroke-width="1.5"/><line x1="635" y1="68" x2="635" y2="102" stroke="#bbb" stroke-width="1.5"/><line x1="845" y1="68" x2="845" y2="102" stroke="#bbb" stroke-width="1.5"/><line x1="435" y1="102" x2="845" y2="102" stroke="#bbb" stroke-width="1.5"/><line x1="780" y1="102" x2="780" y2="120" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <!-- ROW 3 -->
+      <rect x="20" y="230" width="150" height="38" rx="8" fill="#d4f0e0" stroke="#7ecfa8" stroke-width="0.5"/><text x="95" y="254" text-anchor="middle" font-size="12" font-weight="500" fill="#0a5c3a">AI Agent Support</text>
+      <line x1="95" y1="166" x2="95" y2="230" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <line x1="95" y1="268" x2="95" y2="480" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <path d="M28 640 L22 640 L22 480" fill="none" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <path d="M268 621 L254 621 L254 480" fill="none" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <line x1="22" y1="480" x2="490" y2="480" stroke="#bbb" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#a)"/>
+      <path d="M780 166 L780 480 L660 480" fill="none" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <!-- ORCHESTRA -->
+      <polygon points="575,435 650,480 575,525 500,480" fill="#d4f0e0" stroke="#7ecfa8" stroke-width="1"/><text x="575" y="474" text-anchor="middle" font-size="12" font-weight="500" fill="#0a5c3a">AI Agent</text><text x="575" y="490" text-anchor="middle" font-size="12" font-weight="500" fill="#0a5c3a">Orchestra</text>
+      <!-- TRUNK -->
+      <line x1="575" y1="525" x2="575" y2="570" stroke="#bbb" stroke-width="1.5"/><line x1="100" y1="570" x2="1100" y2="570" stroke="#bbb" stroke-width="1.5"/>
+      <line x1="100" y1="570" x2="100" y2="600" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="350" y1="570" x2="350" y2="600" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="700" y1="570" x2="700" y2="600" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="900" y1="570" x2="900" y2="600" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="1100" y1="570" x2="1100" y2="600" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <!-- ROW 4 -->
+      <rect id="r-aitools" x="35" y="602" width="130" height="38" rx="8" fill="#d4f0e0" stroke="#7ecfa8" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('aitools',this)"/><text x="100" y="626" text-anchor="middle" font-size="12" font-weight="500" fill="#0a5c3a" style="pointer-events:none">AI Agent Tools</text>
+      <rect x="268" y="602" width="164" height="38" rx="8" fill="#d5e8f5" stroke="#7ab8e0" stroke-width="0.5"/><text x="350" y="626" text-anchor="middle" font-size="12" font-weight="500" fill="#1a4f72">Team Front-CS</text>
+      <!-- TEAM FRONT group -->
+      <rect x="166" y="588" width="370" height="170" rx="10" fill="none" stroke="#7ab8e0" stroke-width="1.2" stroke-dasharray="6 4"/>
+      <text x="350" y="584" text-anchor="middle" font-size="11" font-weight="600" fill="#7ab8e0" letter-spacing="0.08em">TEAM FRONT</text>
+      <!-- TEAM BACK group -->
+      <rect x="610" y="588" width="580" height="170" rx="10" fill="none" stroke="#e0a96d" stroke-width="1.2" stroke-dasharray="6 4"/>
+      <text x="900" y="584" text-anchor="middle" font-size="11" font-weight="600" fill="#e0a96d" letter-spacing="0.08em">TEAM BACK</text>
+      <rect id="r-btram" x="622" y="602" width="156" height="38" rx="8" fill="#f5dfc0" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('btram',this)"/><text x="700" y="626" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">Back Tramitación</text>
+      <rect id="r-bpc" x="822" y="602" width="156" height="38" rx="8" fill="#f5dfc0" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('bpc',this)"/><text x="900" y="626" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">Back PC · Log.</text>
+      <rect x="1022" y="602" width="156" height="38" rx="8" fill="#f5dfc0" stroke="#e0a96d" stroke-width="0.5"/><text x="1100" y="626" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310">Back Producción</text>
+      <!-- ROW 5 -->
+      <line x1="350" y1="640" x2="350" y2="678" stroke="#bbb" stroke-width="1.5"/><line x1="228" y1="678" x2="472" y2="678" stroke="#bbb" stroke-width="1.5"/><line x1="228" y1="678" x2="228" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="350" y1="678" x2="350" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="472" y1="678" x2="472" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <rect id="r-support" x="178" y="700" width="100" height="36" rx="7" fill="#eef5fc" stroke="#7ab8e0" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('support',this)"/><text x="228" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#1a4f72" style="pointer-events:none">Support</text>
+      <rect id="r-cs" x="300" y="700" width="100" height="36" rx="7" fill="#eef5fc" stroke="#7ab8e0" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('cs',this)"/><text x="350" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#1a4f72" style="pointer-events:none">CS</text>
+      <rect id="r-cs360" x="422" y="700" width="100" height="36" rx="7" fill="#eef5fc" stroke="#7ab8e0" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('cs360',this)"/><text x="472" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#1a4f72" style="pointer-events:none">CS 360</text>
+      <line x1="1100" y1="640" x2="1100" y2="678" stroke="#bbb" stroke-width="1.5"/><line x1="994" y1="678" x2="1176" y2="678" stroke="#bbb" stroke-width="1.5"/><line x1="994" y1="678" x2="994" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="1058" y1="678" x2="1058" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="1122" y1="678" x2="1122" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/><line x1="1176" y1="678" x2="1176" y2="698" stroke="#bbb" stroke-width="1.5" marker-end="url(#a)"/>
+      <rect id="r-web" x="960" y="700" width="68" height="36" rx="7" fill="#fef2ed" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('web',this)"/><text x="994" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">Web</text>
+      <rect id="r-rrss" x="1024" y="700" width="68" height="36" rx="7" fill="#fef2ed" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('rrss',this)"/><text x="1058" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">RRSS</text>
+      <rect id="r-seo" x="1088" y="700" width="68" height="36" rx="7" fill="#fef2ed" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('seo',this)"/><text x="1122" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">SEO</text>
+      <rect id="r-fra" x="1152" y="700" width="44" height="36" rx="7" fill="#fef2ed" stroke="#e0a96d" stroke-width="0.5" style="cursor:pointer" onclick="openDetail('fra',this)"/><text x="1174" y="723" text-anchor="middle" font-size="12" font-weight="500" fill="#7a4310" style="pointer-events:none">FRA</text>
+      <!-- ROADMAP ARROWS -->
+      <line x1="228" y1="736" x2="228" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="350" y1="736" x2="350" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="472" y1="736" x2="472" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/>
+      <line x1="100" y1="828" x2="100" y2="640" stroke="#7f77dd" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/>
+      <line x1="700" y1="640" x2="700" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="900" y1="640" x2="900" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/>
+      <line x1="994" y1="736" x2="994" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="1058" y1="736" x2="1058" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="1122" y1="736" x2="1122" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/><line x1="1174" y1="736" x2="1174" y2="824" stroke="#afa9ec" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a)"/>
+      <!-- ROADMAP BAND -->
+      <rect x="20" y="828" width="1160" height="52" rx="10" fill="#d4f0e0" stroke="#7ecfa8" stroke-width="0.5"/><text x="600" y="848" text-anchor="middle" font-size="12" font-weight="500" fill="#0a5c3a" letter-spacing="0.08em">ROADMAP · AI AGENTS TOOLS</text><text x="600" y="866" text-anchor="middle" font-size="11" fill="#1d9e75">Las capacidades humanas actuales definen las próximas tools de IA</text>
+    </svg>
+    <!-- DETAIL PANELS -->
+    <div id="d-aitools" class="detail"><span class="detail-close" onclick="closeDetail('aitools')">✕</span><div class="detail-title">AI Agent Tools</div><ul><li>Cambios datos HubSpot</li><li>Cambios textos web</li><li>→ Roadmap tools (pendiente)</li></ul></div>
+    <div id="d-support" class="detail"><span class="detail-close" onclick="closeDetail('support')">✕</span><div class="detail-title">Support</div><ul><li>Consulta / Soporte</li><li>Cobro IGIC / Extras</li></ul></div>
+    <div id="d-cs" class="detail"><span class="detail-close" onclick="closeDetail('cs')">✕</span><div class="detail-title">CS</div><ul><li>Firma Memoria</li><li>Presentación / Entrega Proyecto</li><li>NPS negativo</li><li>Upsell / Crossell</li><li>Bloqueos Proyecto</li><li>Evidencias Memoria</li></ul></div>
+    <div id="d-cs360" class="detail"><span class="detail-close" onclick="closeDetail('cs360')">✕</span><div class="detail-title">CS 360</div><ul><li>Todo lo de CS +</li><li>Reseña Negativa</li><li>Ratificaciones disconformes</li><li>Auditoría</li><li>Compensaciones</li><li>Solicitud de Baja</li><li>Renovación / Cierre KD</li></ul></div>
+    <div id="d-btram" class="detail"><span class="detail-close" onclick="closeDetail('btram')">✕</span><div class="detail-title">Back Tramitación</div><ul><li>Crear Memorias</li><li>Presentar Memorias</li><li>Firma Memorias</li></ul></div>
+    <div id="d-bpc" class="detail"><span class="detail-close" onclick="closeDetail('bpc')">✕</span><div class="detail-title">Back PC · Logística</div><ul><li>Incidencias hardware</li><li>Sustitución equipo</li><li>Incidencias software / antivirus</li><li>Gestión envío</li><li>Seguimiento entrega</li></ul></div>
+    <div id="d-web" class="detail"><span class="detail-close" onclick="closeDetail('web')">✕</span><div class="detail-title">Back · Web</div><ul><li>Creación Web</li><li>Cambios Textos Web</li><li>Cambios Imágenes Web</li><li>Integraciones carrito</li><li>Actualizar productos ECOM</li><li>Revisión QA</li><li>Deployment</li><li>Incidencias web</li></ul></div>
+    <div id="d-rrss" class="detail"><span class="detail-close" onclick="closeDetail('rrss')">✕</span><div class="detail-title">Back · RRSS</div><ul><li>Producción contenido</li><li>Crear Estrategia</li><li>Revisión QA</li><li>Programación contenidos</li><li>Cambios Post</li><li>Cambios Estrategia</li><li>Incidencias RRSS</li></ul></div>
+    <div id="d-seo" class="detail"><span class="detail-close" onclick="closeDetail('seo')">✕</span><div class="detail-title">Back · SEO</div><ul><li>Producción / estrategia</li><li>Revisión QA</li><li>Cambios de proyecto</li><li>Incidencias SEO</li></ul></div>
+    <div id="d-fra" class="detail"><span class="detail-close" onclick="closeDetail('fra')">✕</span><div class="detail-title">Back · Factura</div><ul><li>Producción / configuración</li><li>Incidencias software</li></ul></div>
+    <div class="legend">
+      <div class="leg-item"><div style="width:20px;height:1.5px;background:#bbb"></div>Flujo principal</div>
+      <div class="leg-item"><div style="width:20px;height:0;border-top:1.5px dashed #bbb"></div>Derivación</div>
+      <div class="leg-item"><div style="width:20px;height:0;border-top:1.5px dashed #afa9ec"></div>→ Roadmap IA</div>
+      <div class="leg-item"><div style="width:12px;height:12px;border-radius:2px;background:#d4f0e0;border:0.5px solid #7ecfa8"></div>IA</div>
+      <div class="leg-item"><div style="width:12px;height:12px;border-radius:2px;background:#d5e8f5;border:0.5px solid #7ab8e0"></div>Front</div>
+      <div class="leg-item"><div style="width:12px;height:12px;border-radius:2px;background:#f5dfc0;border:0.5px solid #e0a96d"></div>Back</div>
+      <div class="leg-item"><div style="width:12px;height:12px;transform:rotate(45deg);background:#d4f0e0;border:0.5px solid #7ecfa8"></div>Orquestador</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div style="font-size:10.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px">Cambio Fundamental</div>
+    <div class="grid2">
+      <div><div style="font-size:10.5px;font-weight:600;color:var(--rose);margin-bottom:6px">ANTES (Funcional)</div><div style="font-size:12px;color:var(--muted);line-height:1.65">Manager asigna → Equipo decide → Sin datos → Intuición → IA puntual</div></div>
+      <div><div style="font-size:10.5px;font-weight:600;color:var(--green);margin-bottom:6px">DESPUÉS (Agéntico)</div><div style="font-size:12px;color:var(--muted);line-height:1.65">Orchestra genera ticket → Política prioriza → Humano ejecuta → Todo medido → AI Tool replica</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ROADMAP ═══ -->
+<div class="tab-panel" id="panel-roadmap">
+  <div class="section-title"><h2><span>◆</span> Roadmap de Transición</h2><p>Q2: Establecer el sistema — Q3+: Transferir capacidades a AI Tools</p></div>
+  <div class="kpis">
+    <div class="kpi"><div class="val txt-accent">90</div><div class="lbl">Días hasta Go-Live</div></div>
+    <div class="kpi"><div class="val">~200</div><div class="lbl">Personas</div></div>
+    <div class="kpi"><div class="val txt-cyan">4</div><div class="lbl">Fases Q2</div></div>
+    <div class="kpi"><div class="val txt-green">Q3+</div><div class="lbl">AI Tools escalan</div></div>
+  </div>
+  <div class="phase" onclick="togglePhase(this)"><div class="phase-header" style="border-left:3px solid var(--accent)"><div style="display:flex;align-items:center;gap:10px"><span class="badge" style="color:var(--accent);background:var(--accentSoft)">Fase 0</span><span style="font-size:13px;font-weight:500">Arquitectura del Sistema + Baseline</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;color:var(--muted)">Abr 1–20</span><span class="phase-arrow">▼</span></div></div><div class="phase-body"><div class="phase-item"><span class="txt-accent">→</span>Documentar cada proceso como tipo de ticket — <strong class="hl">catálogo de capacidades humanas</strong></div><div class="phase-item"><span class="txt-accent">→</span>Políticas: P0 Firma memorias → P1 Entrega → P2 Satisfacción → P3 Compliance → P4 Operativa</div><div class="phase-item"><span class="txt-accent">→</span>Baseline: volúmenes, tiempos, NPS, memorias en pipeline</div><div class="phase-item"><span class="txt-accent">→</span>Seleccionar tecnología Orchestra — decisión 20 abril</div><div class="phase-item"><span class="txt-accent">→</span>Comunicación a liderazgo: cambio de modelo operativo</div></div></div>
+  <div class="phase" onclick="togglePhase(this)"><div class="phase-header" style="border-left:3px solid var(--cyan)"><div style="display:flex;align-items:center;gap:10px"><span class="badge" style="color:var(--cyan);background:var(--cyanSoft)">Fase 1</span><span style="font-size:13px;font-weight:500">MVP Orchestra + Consolidación Front</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;color:var(--muted)">Abr 20–May 15</span><span class="phase-arrow">▼</span></div></div><div class="phase-body"><div class="phase-item"><span class="txt-cyan">→</span>Orchestra con reglas deterministas (colas P0→P4)</div><div class="phase-item"><span class="txt-cyan">→</span>Front trabaja por cola — ejecutan en orden</div><div class="phase-item"><span class="txt-cyan">→</span>Support + Satisfaction → Team Front-Support</div><div class="phase-item"><span class="txt-cyan">→</span>CS → CS Middle + CS 360</div><div class="phase-item"><span class="txt-cyan">→</span>Front Tramitación disuelto</div><div class="phase-item"><span class="txt-cyan">→</span>Instrumentación: tipo, tiempo, ejecutor por ticket</div></div></div>
+  <div class="phase" onclick="togglePhase(this)"><div class="phase-header" style="border-left:3px solid var(--green)"><div style="display:flex;align-items:center;gap:10px"><span class="badge" style="color:var(--green);background:var(--greenSoft)">Fase 2</span><span style="font-size:13px;font-weight:500">Back al Orchestra</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;color:var(--muted)">May 15–Jun 7</span><span class="phase-arrow">▼</span></div></div><div class="phase-body"><div class="phase-item"><span class="txt-green">→</span>Back Tramitación conectado (equipo intacto)</div><div class="phase-item"><span class="txt-green">→</span>Helpdesk → Back PC · Logística</div><div class="phase-item"><span class="txt-green">→</span>Producción → Web, RRSS, SEO, FRA</div><div class="phase-item"><span class="txt-green">→</span><strong class="hl">Toda la empresa en Orchestra</strong></div></div></div>
+  <div class="phase" onclick="togglePhase(this)"><div class="phase-header" style="border-left:3px solid var(--amber)"><div style="display:flex;align-items:center;gap:10px"><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Fase 3</span><span style="font-size:13px;font-weight:500">Go-Live + Informe de Capacidades</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;color:var(--muted)">Jun 7–30</span><span class="phase-arrow">▼</span></div></div><div class="phase-body"><div class="phase-item"><span class="txt-amber">→</span>Go-Live oficial</div><div class="phase-item"><span class="txt-amber">→</span>2 semanas estabilización</div><div class="phase-item"><span class="txt-amber">→</span>Validación KPIs vs. baseline</div><div class="phase-item"><span class="txt-amber">→</span><strong class="hl">30 junio:</strong> Ranking capacidades por volumen y viabilidad → roadmap AI Tools</div></div></div>
+  <div class="card" style="border-left:3px solid var(--green);margin-top:16px">
+    <div style="font-size:10.5px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Q3–Q4: Transferencia Progresiva</div>
+    <p style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-bottom:10px"><strong class="hl">Q3:</strong> Primeras tools basadas en datos. Criterio: volumen × viabilidad × impacto. Front se evalúa por revenue.</p>
+    <p style="font-size:12.5px;color:var(--muted);line-height:1.7;margin:0"><strong class="hl">Q4:</strong> Orchestra evoluciona a LLM. Primera ronda de ajuste de headcount.</p>
+  </div>
+</div>
+
+<!-- ═══ FINANCIAL ═══ -->
+<div class="tab-panel" id="panel-financial">
+  <div class="section-title"><h2><span>◆</span> Modelo de Impacto</h2></div>
+  <div class="card" style="overflow-x:auto">
+    <div class="table-grid" style="grid-template-columns:1.3fr 1fr 1fr 1fr;min-width:500px">
+      <div class="cell head">Métrica</div><div class="cell head" style="text-align:center">Q2</div><div class="cell head" style="text-align:center">Q3</div><div class="cell head" style="text-align:center">Q4</div>
+      <div class="cell hl">Headcount</div><div class="cell txt-muted" style="text-align:center">~200</div><div class="cell txt-muted" style="text-align:center">~190–195</div><div class="cell txt-muted" style="text-align:center">~170–180</div>
+      <div class="cell hl">AI Tools</div><div class="cell txt-muted" style="text-align:center">0</div><div class="cell txt-muted" style="text-align:center">2–3</div><div class="cell txt-muted" style="text-align:center">5–7</div>
+      <div class="cell hl">% Auto-resueltos</div><div class="cell txt-muted" style="text-align:center">~15%</div><div class="cell txt-muted" style="text-align:center">~25–30%</div><div class="cell txt-muted" style="text-align:center">~40–50%</div>
+      <div class="cell hl">Capacidades</div><div class="cell txt-muted" style="text-align:center">Catálogo</div><div class="cell txt-muted" style="text-align:center">Top 10</div><div class="cell txt-muted" style="text-align:center">5–7 en IA</div>
+      <div class="cell hl">Orchestra</div><div class="cell txt-muted" style="text-align:center">Reglas</div><div class="cell txt-muted" style="text-align:center">+ Dashboard</div><div class="cell txt-muted" style="text-align:center">LLM</div>
+      <div class="cell hl" style="border-bottom:none">Revenue front</div><div class="cell txt-muted" style="text-align:center;border-bottom:none">—</div><div class="cell txt-muted" style="text-align:center;border-bottom:none">Midiendo</div><div class="cell txt-muted" style="text-align:center;border-bottom:none">Eval.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RISKS ═══ -->
+<div class="tab-panel" id="panel-risks">
+  <div class="section-title"><h2><span>◆</span> Matriz de Riesgos</h2></div>
+  <div class="card" style="overflow-x:auto"><div style="min-width:500px">
+    <div class="risk-row"><span style="font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase">Riesgo</span><span style="font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase">Impacto</span><span style="font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase">Prob.</span><span style="font-size:9.5px;font-weight:600;color:var(--dim);text-transform:uppercase">Mitigación</span></div>
+    <div class="risk-row"><span class="hl">Orchestra MVP no listo</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Alto</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="txt-muted">Colas en ClickUp/HubSpot.</span></div>
+    <div class="risk-row"><span class="hl">Caída firma memorias</span><span class="badge" style="color:var(--rose);background:var(--roseSoft)">Crítico</span><span class="badge" style="color:var(--green);background:var(--greenSoft)">Bajo</span><span class="txt-muted">Back Tram. intacto.</span></div>
+    <div class="risk-row"><span class="hl">Caída NPS</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Alto</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="txt-muted">CS 360 desde día 1.</span></div>
+    <div class="risk-row"><span class="hl">Datos insuficientes</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="txt-muted">Instrumentación día 1.</span></div>
+    <div class="risk-row"><span class="hl">Resistencia a cola</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="txt-muted">Eval. más justa por throughput.</span></div>
+    <div class="risk-row"><span class="hl">Reactivación KD</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Alto</span><span class="badge" style="color:var(--amber);background:var(--amberSoft)">Medio</span><span class="txt-muted">Orchestra auto-ajusta.</span></div>
+  </div></div>
+</div>
+
+<!-- ═══ MILESTONES ═══ -->
+<div class="tab-panel" id="panel-decisions">
+  <div class="section-title"><h2><span>◆</span> Decisiones Requeridas</h2></div>
+  <div class="decision" style="border-left-color:var(--rose)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:19px;font-weight:700;color:var(--rose)">#1</span><span style="font-size:13.5px;font-weight:600">Tecnología Orchestra</span></div><span class="badge" style="color:var(--rose);background:var(--roseSoft)">20 Abr</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6"><strong class="hl">Rec:</strong> ClickUp + HubSpot + n8n/Make.</div></div>
+  <div class="decision" style="border-left-color:var(--amber)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:19px;font-weight:700;color:var(--amber)">#2</span><span style="font-size:13.5px;font-weight:600">Owner Orchestra</span></div><span class="badge" style="color:var(--rose);background:var(--roseSoft)">15 Abr</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6"><strong class="hl">Rec:</strong> Perfil Ops/Product como dueño único.</div></div>
+  <div class="decision" style="border-left-color:var(--cyan)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:19px;font-weight:700;color:var(--cyan)">#3</span><span style="font-size:13.5px;font-weight:600">Budget automatización</span></div><span class="badge" style="color:var(--rose);background:var(--roseSoft)">20 Abr</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6"><strong class="hl">Rec:</strong> Middleware + API LLM para Q3.</div></div>
+  <div class="decision" style="border-left-color:var(--green)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:19px;font-weight:700;color:var(--green)">#4</span><span style="font-size:13.5px;font-weight:600">Revenue model Front</span></div><span class="badge" style="color:var(--amber);background:var(--amberSoft)">15 May</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6"><strong class="hl">Rec:</strong> Targets upsell/cross-sell. Medir Q3.</div></div>
+  <div class="card card-accent" style="margin-top:18px">
+    <div style="font-size:10.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Hitos Clave</div>
+    <div class="milestone"><span class="md">20 Abr</span><span class="txt-muted">Taxonomía + políticas + tech</span></div>
+    <div class="milestone"><span class="md">30 Abr</span><span class="txt-muted">Orchestra MVP para front</span></div>
+    <div class="milestone"><span class="md">15 May</span><span class="txt-muted">Front reorganizado</span></div>
+    <div class="milestone"><span class="md">7 Jun</span><span class="txt-muted">Back en Orchestra</span></div>
+    <div class="milestone" style="border-bottom:2px solid rgba(34,197,94,0.3)"><span class="md" style="color:var(--green)">30 Jun</span><span class="hl" style="color:var(--green)">GO-LIVE + informe capacidades ✓</span></div>
+    <div class="milestone"><span class="md">31 Jul</span><span class="txt-muted">Primera AI Tool en producción</span></div>
+    <div class="milestone"><span class="md">30 Sep</span><span class="txt-muted">Eval. Q3</span></div>
+    <div class="milestone"><span class="md">31 Dic</span><span class="txt-muted">Orchestra LLM + 5–7 tools</span></div>
+  </div>
+</div>
+
+<!-- ═══ CAPABILITIES ═══ -->
+<div class="tab-panel" id="panel-capabilities">
+  <div class="section-title"><h2><span>◆</span> Inventario de Capacidades</h2><p>Haz clic en → para transferir a AI Agent Tools. Haz clic en ← para revertir.</p></div>
+  <div style="margin-bottom:16px">
+    <div class="grid2">
+      <div class="card" style="text-align:center;padding:14px"><span id="count-human" style="font-size:22px;font-weight:700;color:var(--rose);display:block;line-height:1"></span><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em">Capacidades Humanas</span></div>
+      <div class="card" style="text-align:center;padding:14px"><span id="count-ai" style="font-size:22px;font-weight:700;color:var(--green);display:block;line-height:1"></span><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em">AI Agent Tools</span></div>
+    </div>
+  </div>
+  <div class="cap-columns">
+    <div><div class="cap-col-header" style="color:var(--rose);background:var(--roseSoft)">Capacidades Humanas</div><div id="human-list"></div></div>
+    <div class="cap-center"><div style="font-size:20px;color:var(--dim)">⇄</div></div>
+    <div><div class="cap-col-header" style="color:var(--green);background:var(--greenSoft)">AI Agent Tools</div><div id="ai-list"></div></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// TABS
+document.querySelectorAll('.tabs button').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(b){b.classList.remove('active')});
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// PHASES
+function togglePhase(el){
+  var body=el.querySelector('.phase-body'),arrow=el.querySelector('.phase-arrow');
+  if(body.classList.contains('open')){body.classList.remove('open');arrow.classList.remove('open')}
+  else{body.classList.add('open');arrow.classList.add('open')}
+}
+
+// DIAGRAM DETAILS
+var currentOpen=null;
+function openDetail(id,rectEl){
+  if(currentOpen&&currentOpen!==id)closeDetail(currentOpen);
+  var panel=document.getElementById('d-'+id);
+  var wrap=document.getElementById('diagram-wrap');
+  var elRect=rectEl.getBoundingClientRect();
+  var wrapRect=wrap.getBoundingClientRect();
+  var left=(elRect.left-wrapRect.left)+elRect.width/2-90;
+  var top=(elRect.bottom-wrapRect.top)+6;
+  if(left+220>wrapRect.offsetWidth)left=wrapRect.offsetWidth-224;
+  if(left<0)left=4;
+  panel.style.left=left+'px';
+  panel.style.top=top+'px';
+  panel.classList.toggle('open',currentOpen!==id);
+  currentOpen=(currentOpen===id)?null:id;
+}
+function closeDetail(id){
+  document.getElementById('d-'+id).classList.remove('open');
+  if(currentOpen===id)currentOpen=null;
+}
+
+// CAPABILITIES
+var capabilities = [
+  {id:'sp1',name:'Consulta / Soporte',group:'Support',side:'human'},
+  {id:'sp2',name:'Cobro IGIC / Extras',group:'Support',side:'human'},
+  {id:'cs1',name:'Firma Memoria',group:'CS',side:'human'},
+  {id:'cs2',name:'Presentación / Entrega Proyecto',group:'CS',side:'human'},
+  {id:'cs3',name:'NPS negativo',group:'CS',side:'human'},
+  {id:'cs4',name:'Upsell / Crossell',group:'CS',side:'human'},
+  {id:'cs5',name:'Bloqueos Proyecto',group:'CS',side:'human'},
+  {id:'cs6',name:'Evidencias Memoria',group:'CS',side:'human'},
+  {id:'c31',name:'Firma Memoria',group:'CS 360',side:'human'},
+  {id:'c32',name:'Presentación / Entrega Proyecto',group:'CS 360',side:'human'},
+  {id:'c33',name:'NPS negativo',group:'CS 360',side:'human'},
+  {id:'c34',name:'Upsell / Crossell',group:'CS 360',side:'human'},
+  {id:'c35',name:'Bloqueos Proyecto',group:'CS 360',side:'human'},
+  {id:'c36',name:'Evidencias Memoria',group:'CS 360',side:'human'},
+  {id:'c37',name:'Reseña Negativa',group:'CS 360',side:'human'},
+  {id:'c38',name:'Ratificaciones disconformes',group:'CS 360',side:'human'},
+  {id:'c39',name:'Auditoría',group:'CS 360',side:'human'},
+  {id:'c3a',name:'Compensaciones',group:'CS 360',side:'human'},
+  {id:'c3b',name:'Solicitud de Baja',group:'CS 360',side:'human'},
+  {id:'c3c',name:'Renovación / Cierre KD',group:'CS 360',side:'human'},
+  {id:'bt1',name:'Crear Memorias',group:'Back Tramitación',side:'human'},
+  {id:'bt2',name:'Presentar Memorias',group:'Back Tramitación',side:'human'},
+  {id:'bt3',name:'Firma Memorias',group:'Back Tramitación',side:'human'},
+  {id:'pc1',name:'Incidencias hardware',group:'Back PC · Logística',side:'human'},
+  {id:'pc2',name:'Sustitución equipo',group:'Back PC · Logística',side:'human'},
+  {id:'pc3',name:'Incidencias software / antivirus',group:'Back PC · Logística',side:'human'},
+  {id:'pc4',name:'Gestión envío',group:'Back PC · Logística',side:'human'},
+  {id:'pc5',name:'Seguimiento entrega',group:'Back PC · Logística',side:'human'},
+  {id:'w1',name:'Creación Web',group:'Back · Web',side:'human'},
+  {id:'w2',name:'Cambios Textos Web',group:'Back · Web',side:'human'},
+  {id:'w3',name:'Cambios Imágenes Web',group:'Back · Web',side:'human'},
+  {id:'w4',name:'Integraciones carrito de compras',group:'Back · Web',side:'human'},
+  {id:'w5',name:'Actualizar productos ECOM',group:'Back · Web',side:'human'},
+  {id:'w6',name:'Revisión QA',group:'Back · Web',side:'human'},
+  {id:'w7',name:'Deployment',group:'Back · Web',side:'human'},
+  {id:'w8',name:'Incidencias web',group:'Back · Web',side:'human'},
+  {id:'r1',name:'Producción contenido',group:'Back · RRSS',side:'human'},
+  {id:'r2',name:'Crear Estrategia',group:'Back · RRSS',side:'human'},
+  {id:'r3',name:'Revisión QA',group:'Back · RRSS',side:'human'},
+  {id:'r4',name:'Programación contenidos',group:'Back · RRSS',side:'human'},
+  {id:'r5',name:'Cambios Post',group:'Back · RRSS',side:'human'},
+  {id:'r6',name:'Cambios Estrategia',group:'Back · RRSS',side:'human'},
+  {id:'r7',name:'Incidencias RRSS',group:'Back · RRSS',side:'human'},
+  {id:'s1',name:'Producción / estrategia',group:'Back · SEO',side:'human'},
+  {id:'s2',name:'Revisión QA',group:'Back · SEO',side:'human'},
+  {id:'s3',name:'Cambios de proyecto',group:'Back · SEO',side:'human'},
+  {id:'s4',name:'Incidencias SEO',group:'Back · SEO',side:'human'},
+  {id:'f1',name:'Producción / configuración',group:'Back · Factura',side:'human'},
+  {id:'f2',name:'Incidencias software',group:'Back · Factura',side:'human'},
+  {id:'ai1',name:'Cambios datos HubSpot',group:'AI Tools Actuales',side:'ai'},
+  {id:'ai2',name:'Cambios textos web',group:'AI Tools Actuales',side:'ai'},
+];
+
+function moveItem(id){
+  var item=capabilities.find(function(c){return c.id===id});
+  if(item)item.side=item.side==='human'?'ai':'human';
+  renderCapabilities();
+}
+
+function renderCapabilities(){
+  var hItems=capabilities.filter(function(c){return c.side==='human'});
+  var aItems=capabilities.filter(function(c){return c.side==='ai'});
+  document.getElementById('count-human').textContent=hItems.length;
+  document.getElementById('count-ai').textContent=aItems.length;
+  var hG={};hItems.forEach(function(c){if(!hG[c.group])hG[c.group]=[];hG[c.group].push(c)});
+  var hH='';for(var g in hG){hH+='<div class="cap-group"><div class="cap-group-title">'+g+'</div>';hG[g].forEach(function(c){hH+='<div class="cap-item" onclick="moveItem(\''+c.id+'\')" style="background:rgba(244,63,94,0.04)"><span>'+c.name+'</span><span class="arrow-btn txt-accent">→</span></div>'});hH+='</div>'}
+  document.getElementById('human-list').innerHTML=hH;
+  var aG={};aItems.forEach(function(c){var gr=c.group==='AI Tools Actuales'?'AI Tools Actuales':'Transferido de: '+c.group;if(!aG[gr])aG[gr]=[];aG[gr].push(c)});
+  var aH='';if(aG['AI Tools Actuales']){aH+='<div class="cap-group"><div class="cap-group-title" style="color:var(--green)">AI Tools Actuales</div>';aG['AI Tools Actuales'].forEach(function(c){aH+='<div class="cap-item" onclick="moveItem(\''+c.id+'\')" style="background:rgba(34,197,94,0.06)"><span class="arrow-btn txt-green">←</span><span>'+c.name+'</span></div>'});aH+='</div>'}
+  for(var g2 in aG){if(g2==='AI Tools Actuales')continue;aH+='<div class="cap-group"><div class="cap-group-title" style="color:var(--cyan)">'+g2+'</div>';aG[g2].forEach(function(c){aH+='<div class="cap-item" onclick="moveItem(\''+c.id+'\')" style="background:rgba(34,197,94,0.06)"><span class="arrow-btn txt-green">←</span><span>'+c.name+'</span></div>'});aH+='</div>'}
+  document.getElementById('ai-list').innerHTML=aH;
+}
+renderCapabilities();
+</script>
